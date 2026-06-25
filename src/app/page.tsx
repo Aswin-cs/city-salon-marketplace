@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { cacheLife } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { Search, MapPin, Star } from "lucide-react";
 import dbConnect from "@/lib/db";
 import { Salon } from "@/models/Salon";
 import { SearchBar } from "@/components/SearchBar";
-
-// Enforce instant static shell validation at dev and build time
-export const unstable_instant = { prefetch: "static" };
 
 // Helper to fetch data safely without hitting our own API endpoint during build
 async function getSalons(filters: { service?: string; location?: string; search?: string }) {
@@ -48,12 +45,12 @@ async function getSalons(filters: { service?: string; location?: string; search?
   return JSON.parse(JSON.stringify(salons));
 }
 
-// Cached wrapper around database retrieval
-async function getSalonsCached(filters: { service?: string; location?: string; search?: string }) {
-  "use cache";
-  cacheLife("minutes");
-  return getSalons(filters);
-}
+// Cached wrapper around database retrieval using stable unstable_cache
+const getSalonsCached = unstable_cache(
+  async (filters: { service?: string; location?: string; search?: string }) => getSalons(filters),
+  ["salons-list"],
+  { revalidate: 60, tags: ["salons"] }
+);
 
 export default function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }) {
   return (

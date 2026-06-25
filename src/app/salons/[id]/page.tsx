@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { cacheLife } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { ArrowLeft, Clock, MapPin } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/db";
 import { Salon } from "@/models/Salon";
 import { ServiceMenuClient } from "@/components/ServiceMenuClient";
-
-// Enforce instant static shell validation at dev and build time
-export const unstable_instant = { prefetch: "static" };
 
 // Helper to fetch salon data safely on the server
 async function getSalon(id: string) {
@@ -24,12 +21,12 @@ async function getSalon(id: string) {
   }
 }
 
-// Cached database lookup
-async function getSalonCached(id: string) {
-  "use cache";
-  cacheLife("minutes");
-  return getSalon(id);
-}
+// Cached database lookup using stable unstable_cache
+const getSalonCached = unstable_cache(
+  async (id: string) => getSalon(id),
+  ["salon-detail"],
+  { revalidate: 60, tags: ["salons"] }
+);
 
 export default function SalonProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const sessionPromise = getServerSession(authOptions);
