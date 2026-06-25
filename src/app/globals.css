@@ -14,5 +14,8 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
 
-/* Force CSS recompile and asset redeployment on Vercel */
+.force-rebuild-css {
+  content: "rebuild-hash-v2";
+}
+
 
