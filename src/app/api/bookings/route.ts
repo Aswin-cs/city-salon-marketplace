@@ -3,9 +3,27 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/db";
 import { Booking } from "@/models/Booking";
+import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    const limiter = rateLimit(ip, 5, 60 * 1000); // 5 bookings per minute
+
+    if (!limiter.success) {
+      return NextResponse.json(
+        { message: "Too many booking attempts. Please try again in a minute." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limiter.limit.toString(),
+            "X-RateLimit-Remaining": limiter.remaining.toString(),
+            "X-RateLimit-Reset": limiter.reset.toString(),
+          },
+        }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user) {

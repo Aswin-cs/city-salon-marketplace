@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# City Salon Marketplace
 
-## Getting Started
+A premium urban grooming directory for Mumbai's most beautiful grooming spaces and elite studios. 
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Core Features
+
+### 1. Unified Navigation Bar
+- **Responsive Design**: Clean desktop layout with hover micro-animations and a sleek mobile hamburger toggle drawer.
+- **Dynamic Session Handling**: Suspense-wrapped Server Component that streams the authentication state (Profile, Dashboard, Sign Out / Sign In) without blocking the page's initial static paint.
+
+### 2. Homepage Salon Search & Filtering
+- **Fuzzy Multi-Field Search**: A unified, debounced search bar querying salon names, descriptions, services offered, and neighborhood zones.
+- **Param-Preserving Navigation**: Merges active service and zone categories automatically when executing text searches.
+
+### 3. Interactive Profile Booking Management
+- **Status Filters**: Tabs to instantly filter appointment history by status: `All Bookings`, `Live (Active)`, or `Cancelled`.
+- **Sort Selectors**: Tactile dropdown controls to sort bookings by `Date` (Latest/Oldest First) or `Price` (Highest/Lowest First).
+- **Client-Side Optimization**: Derives lists dynamically on the client to avoid screen flashes or roundtrips, maintaining instant performance.
+
+### 4. Admin Manager Dashboard
+- **Role-Based Protection**: Strict middleware security restricting access to the `/dashboard` route. Non-admin client roles are redirected to `/`.
+- **Analytics Overview**: Live summary widgets tracking total bookings, simulated active traffic, aggregate revenue, and pending actions.
+- **Data Table**: Full overview of recent booking reservations and status descriptors.
+
+### 5. Offline Payment Flow
+- **Direct At-Salon Payments**: Clear UI banners and warnings in checkout modals and history logs reminding users that all payments are handled offline.
+
+### 6. Security Rate Limiting
+- **API Protection**: Customized in-memory sliding-window rate limiter protecting:
+  - Booking creations (5 requests/min limit)
+  - Account registrations (3 signups/5 mins limit)
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 16.3 (App Router with Turbo compiler and Partial Prerendering)
+- **Database**: MongoDB & Mongoose ORM
+- **Authentication**: NextAuth.js (Credentials & Google OAuth Provider support)
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+
+---
+
+## ⚙️ Configuration & Environment Setup
+
+Create a `.env` file in the root directory and specify the following keys:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_jwt_secret
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth (Optional login provider)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Execution Instructions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Development Server
+Run the local development server (uses Turbopack by default):
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+### Production Build
+Generate an optimized production build:
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Start Server
+Start the compiled application in production mode:
+```bash
+npm run start
+```

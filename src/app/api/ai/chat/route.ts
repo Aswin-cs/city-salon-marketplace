@@ -2,11 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dbConnect from "@/lib/db";
 import { Salon } from "@/models/Salon";
+import { rateLimit } from "@/lib/rateLimit";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
+    const limiter = rateLimit(ip, 10, 60 * 1000); // 10 requests per minute
+
+    if (!limiter.success) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limiter.limit.toString(),
+            "X-RateLimit-Remaining": limiter.remaining.toString(),
+            "X-RateLimit-Reset": limiter.reset.toString(),
+          },
+        }
+      );
+    }
+
     const { message } = await request.json();
 
     if (!message) {
