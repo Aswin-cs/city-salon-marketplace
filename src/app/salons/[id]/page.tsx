@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
 import { ArrowLeft, Clock, MapPin } from "lucide-react";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { Salon } from "@/models/Salon";
 import { ServiceMenuClient } from "@/components/ServiceMenuClient";

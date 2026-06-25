@@ -3,7 +3,7 @@ import { ArrowLeft, Users, TrendingUp, CalendarCheck, IndianRupee } from "lucide
 import dbConnect from "@/lib/db";
 import { Booking } from "@/models/Booking";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 // Helper to fetch data safely
