@@ -1,5 +1,3 @@
-export const instant = false;
-
 import Link from "next/link";
 import { ArrowLeft, Users, TrendingUp, CalendarCheck, IndianRupee } from "lucide-react";
 import dbConnect from "@/lib/db";
